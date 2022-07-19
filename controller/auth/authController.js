@@ -13,9 +13,14 @@ const login = async (req, res) => {
 const register = async (req, res) => {
   try {
     let result = await authModel.register(req.body);
-    res.send(result);
+    if (result.isError === true) {
+      res.status(500).send(result.error.message);
+    } else {
+      res.status(200).send(result.result);
+    }
   } catch (error) {
     console.log(error);
+    res.status(400);
   }
 };
 

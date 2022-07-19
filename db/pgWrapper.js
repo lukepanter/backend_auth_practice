@@ -1,6 +1,6 @@
-const { Client } = require("pg");
+const Pool = require("pg").Pool;
 
-const client = new Client({
+const pool = new Pool({
   user: "postgres",
   host: "localhost",
   database: "oauth",
@@ -8,12 +8,4 @@ const client = new Client({
   port: 5432,
 });
 
-client.on("connect", () => {
-  console.log("connected to the database");
-});
-
-client.on("end", () => {
-  console.log("disconnected from the database");
-});
-
-module.exports = client;
+module.exports = pool;
