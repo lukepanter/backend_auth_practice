@@ -52,7 +52,22 @@ const register = async (req, res) => {
   }
 };
 
+const logout = async (req, res) => {
+  try {
+    let result = await authModel.logout(req.body);
+    if (result.isError === true) {
+      res.status(400).json({ errorMsg: result.error.message });
+    } else {
+      res.status(200).json(result.result);
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(400);
+  }
+};
+
 module.exports = {
   login,
   register,
+  logout,
 };

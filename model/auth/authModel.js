@@ -46,8 +46,21 @@ const storeToken = async (body) => {
   }
 };
 
+const logout = async (body) => {
+  try {
+    const result = await pool.query(
+      `UPDATE access_tokens SET isactive = 0 WHERE user_id = ${body.id};`
+    );
+    return { isError: false, result: result.rows };
+  } catch (err) {
+    console.log(err);
+    return { isError: true, error: err };
+  }
+};
+
 module.exports = {
   register,
   login,
   storeToken,
+  logout,
 };
