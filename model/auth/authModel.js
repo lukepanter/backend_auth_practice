@@ -14,6 +14,19 @@ const register = async (body) => {
   }
 };
 
+const login = async (body) => {
+  try {
+    const result = await pool.query(
+      `SELECT * FROM users WHERE username = '${body.username}';`
+    );
+    return { isError: false, result: result.rows };
+  } catch (err) {
+    console.log(err);
+    return { isError: true, error: err };
+  }
+};
+
 module.exports = {
   register,
+  login,
 };
