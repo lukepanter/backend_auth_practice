@@ -1,5 +1,7 @@
 const authModel = require("../../model/auth/authModel");
 const bcrypt = require("bcrypt");
+const jwt = require("jwt-simple");
+const moment = require("moment");
 
 const login = async (req, res) => {
   try {
@@ -9,12 +11,25 @@ const login = async (req, res) => {
     } else if (
       bcrypt.compareSync(req.body.user_password, result.result[0].user_password)
     ) {
+      const payload = {
+        sub: req.body.username,
+        iat: new Date().getTime(),
+      };
+      const SECRET = "MY_SECRET_KEY";
+      const token = jwt.encode(payload, SECRET);
+
+      result.result[0].token = token;
+      result.result[0].expire_date = moment()
+        .add(1, "days")
+        .format("YYYY-MM-DD");
+      await authModel.storeToken(result.result[0]);
       res.status(200).json(result.result);
     } else {
       res.status(400).json({ errorMsg: "Invalid username or password" });
     }
   } catch (error) {
     console.log(error);
+    res.status(400);
   }
 };
 

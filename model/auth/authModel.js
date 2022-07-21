@@ -19,6 +19,26 @@ const login = async (body) => {
     const result = await pool.query(
       `SELECT * FROM users WHERE username = '${body.username}';`
     );
+    if (result.rows.length === 0) {
+      return {
+        isError: true,
+        error: { message: "Invalid username or password" },
+      };
+    } else {
+      return { isError: false, result: result.rows };
+    }
+  } catch (err) {
+    console.log(err);
+    return { isError: true, error: err };
+  }
+};
+
+const storeToken = async (body) => {
+  try {
+    const result = await pool.query(
+      `INSERT INTO access_tokens(user_id, access_token, isactive, expire_date)
+        VALUES ('${body.id}', '${body.token}', 1, '${body.expire_date}');`
+    );
     return { isError: false, result: result.rows };
   } catch (err) {
     console.log(err);
@@ -29,4 +49,5 @@ const login = async (body) => {
 module.exports = {
   register,
   login,
+  storeToken,
 };
