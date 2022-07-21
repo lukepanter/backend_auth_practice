@@ -58,9 +58,35 @@ const logout = async (body) => {
   }
 };
 
+const profile = async (body) => {
+  try {
+    const result = await pool.query(
+      `SELECT * FROM users WHERE username = '${body.username}';`
+    );
+    return { isError: false, result: result.rows };
+  } catch (err) {
+    console.log(err);
+    return { isError: true, error: err };
+  }
+};
+
+const isLogin = async (headers) => {
+  try {
+    const result = await pool.query(
+      `SELECT * FROM access_tokens WHERE access_token = '${headers}' AND isactive = 1;`
+    );
+    return { isError: false, result: result.rows };
+  } catch (err) {
+    console.log(err);
+    return { isError: true, error: err };
+  }
+};
+
 module.exports = {
   register,
   login,
   storeToken,
   logout,
+  profile,
+  isLogin,
 };

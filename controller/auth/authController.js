@@ -66,8 +66,23 @@ const logout = async (req, res) => {
   }
 };
 
+const profile = async (req, res) => {
+  try {
+    let result = await authModel.profile(req.body);
+    if (result.isError === true) {
+      res.status(400).json({ errorMsg: result.error.message });
+    } else {
+      res.status(200).json(result.result);
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(400);
+  }
+};
+
 module.exports = {
   login,
   register,
   logout,
+  profile,
 };
