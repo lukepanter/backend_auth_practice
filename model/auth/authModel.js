@@ -14,7 +14,7 @@ const register = async (body) => {
   }
 };
 
-const login = async (body) => {
+const getOneUser = async (body) => {
   try {
     const result = await pool.query(
       `SELECT * FROM users WHERE username = '${body.username}';`
@@ -70,10 +70,10 @@ const profile = async (body) => {
   }
 };
 
-const isLogin = async (headers) => {
+const isLogin = async (headers, date) => {
   try {
     const result = await pool.query(
-      `SELECT * FROM access_tokens WHERE access_token = '${headers}' AND isactive = 1;`
+      `SELECT * FROM access_tokens WHERE access_token = '${headers}' AND isactive = 1 AND expire_date >= '${date}';`
     );
     return { isError: false, result: result.rows };
   } catch (err) {
@@ -84,7 +84,7 @@ const isLogin = async (headers) => {
 
 module.exports = {
   register,
-  login,
+  getOneUser,
   storeToken,
   logout,
   profile,

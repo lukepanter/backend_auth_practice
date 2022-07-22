@@ -5,7 +5,7 @@ const moment = require("moment");
 
 const login = async (req, res) => {
   try {
-    let result = await authModel.login(req.body);
+    let result = await authModel.getOneUser(req.body);
     if (result.isError === true) {
       res.status(400).json({ errorMsg: result.error.message });
     } else if (
