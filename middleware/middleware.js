@@ -16,9 +16,6 @@ const isLogin = async (req, res, next) => {
       req.headers.authorization !== undefined &&
       req.headers.authorization !== ""
     ) {
-      let token = req.headers.authorization;
-      let body = jwt.decode(token, "MY_SECRET_KEY");
-      req.body.username = body.sub;
       next();
     } else {
       res.status(401).send("Please login");

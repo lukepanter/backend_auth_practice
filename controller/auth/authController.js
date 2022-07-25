@@ -24,10 +24,10 @@ const login = async (req, res) => {
           const token = jwt.encode(payload, SECRET);
 
           let expire_date = moment().add(1, "days").format("YYYY-MM-DD");
-
+          console.log(result);
           let createTokenBody = {
             id: result.result[0].id,
-            token: result.result[0].token,
+            token: token,
             expire_date: expire_date,
           };
 
@@ -40,7 +40,7 @@ const login = async (req, res) => {
           };
           res.status(200).json(response);
         } else {
-          res.status(400).json({ errorMsg: "Invalid username or password" });
+          res.status(401).json({ errorMsg: "Invalid username or password" });
         }
         break;
       default:
@@ -87,7 +87,10 @@ const logout = async (req, res) => {
 
 const profile = async (req, res) => {
   try {
-    let result = await authModel.profile(req.body);
+    let token = req.headers.authorization;
+    let body = jwt.decode(token, "MY_SECRET_KEY");
+    body.username = body.sub;
+    let result = await authModel.profile(body);
     if (result.isError === true) {
       res.status(400).json({ errorMsg: result.error.message });
     } else {
